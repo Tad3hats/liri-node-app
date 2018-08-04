@@ -1,45 +1,54 @@
 
 require("dotenv").config();
 
-
-var spotify = new Spotify(keys.spotify);
+var Spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
 
 
 var Twitter = require('twitter');
 
-var client = new Twitter({
-  consumer_key: '',
-  consumer_secret: '',
-  access_token_key: '',
-  access_token_secret: ''
-});
-
-var params = { screen_name: 'nodejs' };
-client.get('statuses/user_timeline', params, function (error, tweets, response) {
-  if (!error) {
-    console.log(tweets);
-  }
-});
 
 // Basic Node application for requesting data from any website
 // Here we incorporate the "request" npm package
 var request = require('request');
-request('http://www.google.com', function (error, response, body) {
-  console.log('error:', error); // Print the error if one occurred
-  console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-  console.log('body:', body); // Print the HTML for the Google homepage.
-});
+// Store all of the arguments in an array
+var nodeArgs = process.argv;
+
+// Create an empty variable for holding the movie name
+var movieName = "";
+
+// Loop through all the words in the node argument
+// And do a little for-loop magic to handle the inclusion of "+"s
+for (var i = 2; i < nodeArgs.length; i++) {
+
+  if (i > 2 && i < nodeArgs.length) {
+
+    movieName = movieName + "+" + nodeArgs[i];
+
+  }
+
+  else {
+
+    movieName += nodeArgs[i];
+
+  }
+}
 
 
 
-// We then run the request module on a URL with a JSON
-request("http://www.omdbapi.com/?t=" + response + "&y=&plot=short&apikey=trilogy", function (error, response, body) {
 
-  // If there were no errors and the response code was 200 (i.e. the request was successful)...
+// Then run a request to the OMDB API with the movie specified
+var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+
+// This line is just to help us debug against the actual URL.
+console.log(queryUrl);
+
+request(queryUrl, function (error, response, body) {
+
+  // If the request is successful
   if (!error && response.statusCode === 200) {
 
-    // Then we print out the imdbRating
+    // Then we parse the body and print out the movie data
     console.log("rating: " + JSON.parse(body).Title);
     console.log("rating: " + JSON.parse(body).Year);
     console.log("rating: " + JSON.parse(body).imdbRating);
