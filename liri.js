@@ -21,24 +21,13 @@ switch (command) {
     //do something else
     break;
   case 'movie-this':
-  // var movieName = process.argv[3];
-  var nodeArgs = process.argv;
-  var movieName ="";
-  for(var i=3; i<nodeArgs.length; i++) {
-    if (i>3 && i<nodeArgs.length) {
-      movieName= movieName + "+" +nodeArgs[i];
-    } 
-    else {
-      movieName += nodeArgs[i];
-    }
-  }
-  if (process.argv[3] ==="") {
-    movieName="Mr+Nobody";
-  }
-  // var movieName = process.argv[3];
-  // if (movieName =="") {
-  //  movieName = "Mr Nobody"; 
-  // }; 
+    // var movieName = process.argv[3];
+    var term = process.argv.slice(3).join(" ");
+
+    if (!term) {
+      term = "Mr Nobody";
+    };
+
     movieMe();
     break;
   case 'do-what-it-says':
@@ -48,7 +37,7 @@ switch (command) {
 //this function queries Spotify
 function spotifyMe() {
   var spotify = new Spotify(keys.spotify);
-  var songChoice = process.argv[3];
+  var songChoice = process.argv.slice(3).join(" ");
 
   //used the type: track option, type: album is an option too but this seems right
   spotify.search({ type: 'track', query: songChoice, }, function (err, data) {
@@ -59,7 +48,7 @@ function spotifyMe() {
     console.log(data.tracks.items[0].name);
     console.log(data.tracks.items[0].preview_url);
     console.log(data.tracks.items[0].album.name);
-    
+
   });
 }
 
@@ -80,23 +69,23 @@ function twitterMe() {
 //this function will query OMDB
 function movieMe() {
   // var movieName = process.argv[3];
-// Then run a request to the OMDB API with the movie specified
-var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
-request(queryUrl, function (error, response, body) {
+  // Then run a request to the OMDB API with the movie specified
+  var queryUrl = "http://www.omdbapi.com/?t=" + term + "&y=&plot=short&apikey=trilogy";
+  request(queryUrl, function (error, response, body) {
 
-  // If the request is successful
-  if (!error && response.statusCode === 200) {
-    // Then we parse the body and print out the movie data
-    console.log("Rating: " + JSON.parse(body).Title);
-    console.log("Year: " + JSON.parse(body).Year);
-    console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+    // If the request is successful
+    if (!error && response.statusCode === 200) {
+      // Then we parse the body and print out the movie data
+      console.log("Rating: " + JSON.parse(body).Title);
+      console.log("Year: " + JSON.parse(body).Year);
+      console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
 
-    //need help on the Rotten tomatoes Ratings Value!
-    console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
-    console.log("Country: " + JSON.parse(body).Country);
-    console.log("Language: " + JSON.parse(body).Language);
-    console.log("Plot: " + JSON.parse(body).Plot);
-    console.log("Actors: " + JSON.parse(body).Actors);
-  }
-});    
+      //need help on the Rotten tomatoes Ratings Value!
+      console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
+      console.log("Country: " + JSON.parse(body).Country);
+      console.log("Language: " + JSON.parse(body).Language);
+      console.log("Plot: " + JSON.parse(body).Plot);
+      console.log("Actors: " + JSON.parse(body).Actors);
+    }
+  });
 }
