@@ -9,7 +9,6 @@ var keys = require('./keys')
 
 var client = new Twitter(keys.twitter);
 
-
 //cool trick my tutor taught me to use switch(command) instead of if statements  :-)
 var command = process.argv[2];
 switch (command) {
@@ -68,10 +67,12 @@ function spotifyMe() {
 function twitterMe() {
   var client = new Twitter(keys.twitter);
 
-  var params = { screen_name: 'tiggity' };
+  var params = { screen_name: 'tiggity2' };
   client.get('statuses/user_timeline', params, function (error, tweets, response) {
     if (!error) {
       console.log(tweets[0].text);
+      console.log(tweets[1].text);
+      console.log(tweets[2].text);
     }
   });
 }
@@ -91,7 +92,7 @@ request(queryUrl, function (error, response, body) {
     console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
 
     //need help on the Rotten tomatoes Ratings Value!
-    console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings.Value);
+    console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
     console.log("Country: " + JSON.parse(body).Country);
     console.log("Language: " + JSON.parse(body).Language);
     console.log("Plot: " + JSON.parse(body).Plot);
