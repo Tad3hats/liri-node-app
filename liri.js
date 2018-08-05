@@ -4,8 +4,8 @@ require("dotenv").config();
 var Twitter = require('twitter');
 var Spotify = require("node-spotify-api");
 var request = require("request");
-
 var keys = require('./keys')
+var fs = require('fs');
 
 var client = new Twitter(keys.twitter);
 
@@ -31,6 +31,7 @@ switch (command) {
     movieMe();
     break;
   case 'do-what-it-says':
+    doRandom();
     break;
 }
 
@@ -55,16 +56,24 @@ function spotifyMe() {
 //this function queries Twitter and shows my tweets
 function twitterMe() {
   var client = new Twitter(keys.twitter);
-
+  //hardcode my Twitter handle created just for this homework
   var params = { screen_name: 'tiggity2' };
   client.get('statuses/user_timeline', params, function (error, tweets, response) {
-    if (!error) {
-      console.log(tweets[0].text);
-      console.log(tweets[1].text);
-      console.log(tweets[2].text);
-    }
-  });
-}
+    // if (!error) {
+    //heading for visual purposes
+    console.log("Here are your recent Tweets.  Are you embarrassed yet?");
+    console.log("--------------");
+    for (var i = 0; i < tweets.length; i++) {
+      //tweet date
+      console.log(tweets[i].created_at);
+      //actual tweet
+      console.log(tweets[i].text);
+      console.log("--------------");
+    };
+  }
+  )
+};
+// }
 
 //this function will query OMDB
 function movieMe() {
@@ -88,4 +97,25 @@ function movieMe() {
       console.log("Actors: " + JSON.parse(body).Actors);
     }
   });
+}
+
+function doRandom() {
+
+  fs.readFile("random.txt", 'utf8', function (err, data) {
+    var spotify = new Spotify(keys.spotify);
+    //only grab the actual song name from random.txt file
+    var songChoice = data.slice(19, -1);
+    // console.log(songChoice);
+    spotify.search({ type: 'track', query: songChoice, }, function (err, data) {
+      if (err) {
+        return console.log('Error occurred: ' + err);
+      }
+      console.log(data.tracks.items[0].artists[0].name);
+      console.log(data.tracks.items[0].name);
+      console.log(data.tracks.items[0].preview_url);
+      console.log(data.tracks.items[0].album.name);
+
+    });
+    // console.log(data);
+  })
 }
